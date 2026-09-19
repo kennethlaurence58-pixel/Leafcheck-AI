@@ -40,6 +40,12 @@
       "expo-sqlite",
       "expo-font",
       "expo-image",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow LeafCheck to use your camera to capture plant photos."
+        }
+      ],
       "expo-status-bar",
       "expo-web-browser"
     ],
