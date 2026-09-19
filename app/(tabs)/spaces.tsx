@@ -10,17 +10,20 @@ export default function SpacesScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { spaces, addSpace, archiveSpace, deleteSpace } = useSpaces();
+  const backgrounds = ["#E8F2E8", "#E3EFEF", "#F3EBD8", "#EDE6F1", "#F5E5DE"];
   const [modalVisible, setModalVisible] = useState(false);
   const [name, setName] = useState("");
   const [error, setError] = useState("");
+  const [background, setBackground] = useState(backgrounds[0]);
 
   const createSpace = () => {
-    const result = addSpace(name);
+    const result = addSpace(name, background);
     if (!result.ok) {
       setError(result.message);
       return;
     }
     setName("");
+    setBackground(backgrounds[0]);
     setError("");
     setModalVisible(false);
   };
@@ -39,7 +42,7 @@ export default function SpacesScreen() {
         <View><Text style={styles.my}>MY</Text><Text style={styles.spacesTitle}>SPACES</Text></View>
         <View style={styles.headerActions}>
           <Pressable style={styles.headerButton} onPress={() => router.push("/notifications")} accessibilityRole="button" accessibilityLabel="Notifications"><Ionicons name="notifications-outline" size={17} color="#20B64D" /></Pressable>
-          <Pressable style={styles.headerButton} onPress={() => router.push("/profile")} accessibilityRole="button" accessibilityLabel="Open profile"><Ionicons name="person-outline" size={17} color="#20B64D" /></Pressable>
+          <Pressable style={styles.headerButton} onPress={() => router.replace("/profile")} accessibilityRole="button" accessibilityLabel="Open profile"><Ionicons name="person-outline" size={17} color="#20B64D" /></Pressable>
         </View>
       </View>
       <View style={styles.spaceList}>
@@ -61,6 +64,8 @@ export default function SpacesScreen() {
             <Text style={styles.modalTitle}>Create a space</Text>
             <TextInput autoFocus value={name} onChangeText={(value) => { setName(value); setError(""); }} placeholder="Space name" maxLength={10} style={styles.input} />
             {error ? <Text style={styles.error}>{error}</Text> : null}
+            <Text style={styles.colorLabel}>Choose a background</Text>
+            <View style={styles.colors}>{backgrounds.map((color) => <Pressable key={color} onPress={() => setBackground(color)} accessibilityRole="button" accessibilityLabel={`Choose background ${color}`} style={[styles.color, { backgroundColor: color }, background === color && styles.selectedColor]} />)}</View>
             <View style={styles.modalActions}>
               <Pressable onPress={() => setModalVisible(false)} style={styles.cancel}><Text>Cancel</Text></Pressable>
               <Pressable onPress={createSpace} style={styles.create}><Text style={styles.createText}>Create</Text></Pressable>
@@ -96,4 +101,8 @@ const styles = StyleSheet.create({
   cancel: { padding: 12 },
   create: { backgroundColor: "#36BF5A", borderRadius: 12, paddingHorizontal: 18, paddingVertical: 12 },
   createText: { color: "#FFFFFF", fontWeight: "700" },
+  colorLabel: { color: "#66746A", marginTop: 16, marginBottom: 8 },
+  colors: { flexDirection: "row", gap: 10 },
+  color: { width: 38, height: 38, borderRadius: 19, borderWidth: 1, borderColor: "#DBE7DA" },
+  selectedColor: { borderWidth: 3, borderColor: "#278448" },
 });

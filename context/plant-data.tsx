@@ -2,15 +2,17 @@ import { PropsWithChildren, createContext, useContext, useEffect, useState } fro
 import { SensorReading, subscribeToSensorReadings } from "@/services/iot-sensor";
 
 const disconnectedReading: SensorReading = {
-  healthy: 9,
-  needsCare: 2,
-  critical: 1,
-  overallHealth: 82,
-  soilMoisture: 62,
-  soilPh: 6.4,
-  temperature: 27,
-  recentAlerts: 2,
-  updatedAt: new Date(0),
+  healthy: 0,
+  needsCare: 0,
+  critical: 0,
+  overallHealth: 0,
+  soilMoisture: 0,
+  soilPh: 0,
+  temperature: 0,
+  recentAlerts: 0,
+  updatedAt: null,
+  connected: false,
+  mode: 'manual',
 };
 
 const PlantDataContext = createContext<SensorReading>(disconnectedReading);
@@ -18,7 +20,7 @@ const PlantDataContext = createContext<SensorReading>(disconnectedReading);
 export function PlantDataProvider({ children }: PropsWithChildren) {
   const [reading, setReading] = useState(disconnectedReading);
 
-  useEffect(() => subscribeToSensorReadings(setReading), []);
+  useEffect(() => subscribeToSensorReadings((next) => setReading({ ...next, connected: true })), []);
 
   return <PlantDataContext.Provider value={reading}>{children}</PlantDataContext.Provider>;
 }

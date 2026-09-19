@@ -64,10 +64,10 @@ export default function SpaceDetailScreen() {
             <Text style={styles.plantName}>{plant}</Text>
           </Pressable>
         ))}
-        <Pressable style={styles.detailPlus} onPress={() => setModalVisible(true)} accessibilityRole="button" accessibilityLabel="Add plant">
-          <Ionicons name="add" size={35} color="#20B64D" />
-        </Pressable>
       </View>
+      <Pressable style={styles.detailPlus} onPress={() => setModalVisible(true)} accessibilityRole="button" accessibilityLabel="Add plant">
+        <Ionicons name="add" size={35} color="#20B64D" />
+      </Pressable>
       <BottomNav />
       <Modal visible={modalVisible} transparent animationType="fade" onRequestClose={() => setModalVisible(false)}>
         <View style={styles.modalBackdrop}>

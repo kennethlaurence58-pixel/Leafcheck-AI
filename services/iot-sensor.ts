@@ -7,7 +7,9 @@ export type SensorReading = {
   soilPh: number;
   temperature: number;
   recentAlerts: number;
-  updatedAt: Date;
+  updatedAt: Date | null;
+  connected: boolean;
+  mode: 'manual' | 'iot';
 };
 
 export type SensorListener = (reading: SensorReading) => void;

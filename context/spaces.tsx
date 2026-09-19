@@ -2,8 +2,9 @@ import { PropsWithChildren, createContext, useContext, useMemo, useState } from 
 
 type SpacesContextValue = {
   spaces: string[];
+  backgrounds: Record<string, string>;
   plantsBySpace: Record<string, string[]>;
-  addSpace: (name: string) => { ok: true } | { ok: false; message: string };
+  addSpace: (name: string, background?: string) => { ok: true } | { ok: false; message: string };
   addPlant: (space: string, name: string) => { ok: true } | { ok: false; message: string };
   archiveSpace: (name: string) => void;
   deleteSpace: (name: string) => void;
@@ -12,13 +13,15 @@ type SpacesContextValue = {
 const SpacesContext = createContext<SpacesContextValue | null>(null);
 
 export function SpacesProvider({ children }: PropsWithChildren) {
-  const [spaces, setSpaces] = useState<string[]>(["Porch", "Garden", "Table"]);
-  const [plantsBySpace, setPlantsBySpace] = useState<Record<string, string[]>>({ Porch:["Monstera"], Garden:["Snake Plant"], Table:["Basil"] });
+  const [spaces, setSpaces] = useState<string[]>([]);
+  const [backgrounds, setBackgrounds] = useState<Record<string, string>>({});
+  const [plantsBySpace, setPlantsBySpace] = useState<Record<string, string[]>>({});
 
   const value = useMemo<SpacesContextValue>(() => ({
     spaces,
+    backgrounds,
     plantsBySpace,
-    addSpace: (rawName) => {
+    addSpace: (rawName, background = "#E8F2E8") => {
       const name = rawName.trim().replace(/\s+/g, " ");
       if (!name) return { ok: false, message: "Enter a space name." };
       if (name.length > 10) return { ok: false, message: "Space names must be 10 characters or fewer." };
@@ -26,6 +29,7 @@ export function SpacesProvider({ children }: PropsWithChildren) {
         return { ok: false, message: "That space already exists." };
       }
       setSpaces((current) => [...current, name]);
+      setBackgrounds((current) => ({ ...current, [name]: background }));
       return { ok: true };
     },
     addPlant: (space, rawName) => {
@@ -56,7 +60,7 @@ export function SpacesProvider({ children }: PropsWithChildren) {
         return next;
       });
     },
-  }), [spaces, plantsBySpace]);
+  }), [spaces, backgrounds, plantsBySpace]);
 
   return <SpacesContext.Provider value={value}>{children}</SpacesContext.Provider>;
 }

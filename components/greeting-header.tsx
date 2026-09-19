@@ -1,9 +1,13 @@
 import { Ionicons } from "@expo/vector-icons";
+import { usePlantData } from "@/context/plant-data";
+import { useProfile } from "@/context/profile";
 import { useRouter } from "expo-router";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export function GreetingHeader() {
   const router = useRouter();
+  const sensor = usePlantData();
+  const profile = useProfile();
   const date = new Date().toLocaleDateString("en-US", {
     weekday: "long",
     month: "short",
@@ -14,7 +18,7 @@ export function GreetingHeader() {
   return (
     <View style={styles.container}>
       <View style={styles.greetingContainer}>
-        <Text style={styles.greeting}>Hello, User &</Text>
+        <Text style={styles.greeting}>Hello, {profile.name.trim().split(/\s+/)[0] || "User"} &</Text>
         <Text style={styles.greetingAccent}>
           {getGreeting().replace("!", "")}<Text style={styles.greetingExclamation}>!</Text>
         </Text>
@@ -22,14 +26,18 @@ export function GreetingHeader() {
       </View>
       <TouchableOpacity
         style={styles.profileIcon}
-        onPress={() => router.push("/profile")}
+        onPress={() => router.replace("/profile")}
         accessibilityRole="button"
         accessibilityLabel="Open profile"
       >
-        <Ionicons name="person-outline" size={25} color="#20A64A" />
+        {profile.photoUri ? (
+          <Image source={{ uri: profile.photoUri }} style={styles.profileImage} />
+        ) : (
+          <Ionicons name="person-outline" size={25} color="#20A64A" />
+        )}
       </TouchableOpacity>
       <View style={styles.modePill}>
-        <Text style={styles.modeText}>Mode: Auto (With IoT)</Text>
+        <Text style={styles.modeText}>Mode: {sensor.connected ? "Auto (With IoT)" : "Manual (No IoT)"}</Text>
       </View>
     </View>
   );
@@ -79,6 +87,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginRight: 2,
+  },
+  profileImage: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
   },
   modePill: {
     position: "absolute",

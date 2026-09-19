@@ -34,6 +34,8 @@ export default function TabLayout() {
       <Tabs.Screen name="spaces" options={{ href: null }} />
       <Tabs.Screen name="space-detail" options={{ href: null }} />
       <Tabs.Screen name="camera" options={{ href: null }} />
+      <Tabs.Screen name="search" options={{ href: null }} />
+      <Tabs.Screen name="notifications" options={{ href: null }} />
     </Tabs>
   );
 }
